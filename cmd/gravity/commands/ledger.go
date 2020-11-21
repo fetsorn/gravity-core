@@ -54,6 +54,7 @@ const (
 	PrivateRPCHostFlag            = "rpc"
 	NetworkFlag                   = "network"
 	BootstrapUrlFlag              = "bootstrap"
+	WavesChainIDFlag              = "waves-chain"
 
 	Custom Network = "custom"
 	DevNet Network = "devnet"
@@ -156,6 +157,10 @@ var (
 						Name:  NetworkFlag,
 						Value: string(DevNet),
 					},
+					&cli.StringFlag{
+						Name: WavesChainIDFlag,
+						Value: `S`,
+					},
 				},
 			},
 			{
@@ -232,7 +237,12 @@ func initLedgerConfig(ctx *cli.Context) error {
 			return err
 		}
 	} else {
-		keysKfg, err := config.GeneratePrivKeys()
+		wavesChainId := ctx.String(WavesChainIDFlag)
+		if wavesChainId == "" {
+			wavesChainId = "S"
+		}
+
+		keysKfg, err := config.GeneratePrivKeys(wavesChainId[0])
 		if err != nil {
 			return err
 		}
